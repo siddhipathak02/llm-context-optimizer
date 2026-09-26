@@ -5,7 +5,7 @@ from google import genai
 load_dotenv()
 
 _client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
-_MODEL = "gemini-3.8-flash"
+_MODEL = "gemini-flash-latest"
 
 def ask_llm(question: str, context: str) -> str:
     """Send a question plus supporting context to the LLM and return its answer."""
