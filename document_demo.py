@@ -2,9 +2,9 @@ from services.pipeline import build_chunks_from_pdf, run_all_algorithms
 from services.llm_client import ask_llm
 from services.pdf_parser import extract_text_from_pdf
 
-PDF_PATH = "test_docs/dbms_test.pdf"
-QUESTION = "Explain normalization and functional dependencies in databases"
-TOKEN_BUDGET = 300
+PDF_PATH = "test_docs/python_tutorial.pdf"
+QUESTION = "How do you check if students passed or failed and calculate their average marks in Python?"
+TOKEN_BUDGET = 700
 
 def main():
     print(f"Extracting and scoring chunks from {PDF_PATH} ...")
@@ -23,6 +23,11 @@ def main():
             f"{result.total_relevance:>14.3f}"
             f"{len(result.selected_chunks):>10}"
         )
+        print("\nSelected chunk IDs:")
+    for name, result in results.items():
+        print(f"{name:<24}: {[c.id for c in result.selected_chunks]}")
+        
+
 
     full_text = extract_text_from_pdf(PDF_PATH)
     full_words = len(full_text.split())
@@ -38,7 +43,10 @@ def main():
     print(f"Token reduction: {100 * (1 - optimized_words / full_words):.1f}%")
 
     print("\n--- Answer using FULL document as context ---")
-    print(ask_llm(QUESTION, full_text))
+    try:
+        print(ask_llm(QUESTION, full_text))
+    except Exception as e:
+        print(f"[FAILED: full document exceeds the LLM's rate/size limit]\n{e}")
 
     print("\n--- Answer using OPTIMIZED (Submodular) selection as context ---")
     print(ask_llm(QUESTION, optimized_context))

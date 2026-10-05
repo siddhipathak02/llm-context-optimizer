@@ -9,14 +9,15 @@ from services.pdf_parser import extract_text_from_pdf
 from services.chunking import chunk_text
 from services.relevance import score_chunks
 
+from functools import partial
+
 ALGORITHMS = {
     "Greedy": greedy_optimize,
     "Dynamic Programming": dynamic_programming_optimize,
     "Approximation": approximation_optimize,
     "Randomized": randomized_optimize,
-    "Submodular Greedy": submodular_greedy_optimize,
+    "Submodular Greedy": partial(submodular_greedy_optimize, redundancy_weight=1.0),
 }
-
 def build_chunks_from_pdf(pdf_path: str, question: str, words_per_chunk: int = 150) -> List[Chunk]:
     """Extract, split, and score chunks from a PDF, ready for optimization."""
     full_text = extract_text_from_pdf(pdf_path)
