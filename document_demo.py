@@ -26,6 +26,13 @@ def main():
         print("\nSelected chunk IDs:")
     for name, result in results.items():
         print(f"{name:<24}: {[c.id for c in result.selected_chunks]}")
+    from services.evaluation import total_relevance, redundancy_score
+    print("\nTrade-off: relevance captured vs. internal redundancy (lower redundancy = more diverse):")
+    print(f"{'Algorithm':<24}{'Relevance':>14}{'Redundancy':>14}")
+    for name, result in results.items():
+        rel = total_relevance(result.selected_chunks)
+        red = redundancy_score(result.selected_chunks)
+        print(f"{name:<24}{rel:>14.3f}{red:>14.3f}")
         
 
 
